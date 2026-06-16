@@ -9,6 +9,13 @@ from databricks.vector_search.client import VectorSearchClient
 from databricks import sql
 from databricks.sdk.core import Config
 
+
+st.set_page_config(
+    page_title="World Bank Findex AI Assistant",
+    page_icon="🌍",
+    layout="wide"
+)
+
 # ----------------------------
 # Config
 # ----------------------------
@@ -566,11 +573,6 @@ Answer:
 # Streamlit UI
 # ----------------------------
 
-st.set_page_config(
-    page_title="World Bank Findex AI Assistant",
-    page_icon="🌍",
-    layout="wide"
-)
 
 st.title("🌍 World Bank Global Findex AI Assistant")
 st.caption("Structured indicators + Global Findex report RAG on Databricks")
