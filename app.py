@@ -25,12 +25,6 @@ SILVER_TABLE = f"{CATALOG}.{SCHEMA}.silver_findex_indicators"
 DATABRICKS_HOST = os.getenv("DATABRICKS_HOST")
 DATABRICKS_WAREHOUSE_ID = os.getenv("DATABRICKS_WAREHOUSE_ID")
 
-import os
-import streamlit as st
-
-st.write("DATABRICKS_HOST exists:", bool(os.getenv("DATABRICKS_HOST")))
-st.write("DATABRICKS_CLIENT_ID exists:", bool(os.getenv("DATABRICKS_CLIENT_ID")))
-st.write("DATABRICKS_CLIENT_SECRET exists:", bool(os.getenv("DATABRICKS_CLIENT_SECRET")))
 # ----------------------------
 # Clients
 # ----------------------------
