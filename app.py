@@ -598,18 +598,11 @@ with st.sidebar:
     
     st.markdown(
         """
-    - [Global Findex 2025 Data Download Page](https://www.worldbank.org/en/publication/globalfindex/download-data)
-    - [Global Findex Database 2025 Excel File](https://thedocs.worldbank.org/en/doc/be6615202d1f08a25855c8ac2d615122-0050012025/related/GlobalFindexDatabase2025.xlsx)
-    - [Global Findex 2025 Report PDF](https://openknowledge.worldbank.org/bitstreams/9288bdc5-7a9b-42de-a47c-3746fd68f22a/download)
+    - [Global Findex 2025 Data Page](https://www.worldbank.org/en/publication/globalfindex/download-data)
+    - [Download Excel File](https://thedocs.worldbank.org/en/doc/be6615202d1f08a25855c8ac2d615122-0050012025/related/GlobalFindexDatabase2025.xlsx)
+    - [Download Report PDF](https://openknowledge.worldbank.org/bitstreams/9288bdc5-7a9b-42de-a47c-3746fd68f22a/download)
     """
     )
-    
-    with st.expander("Technical tables used by this app"):
-        st.write("Structured Delta table:")
-        st.code(SILVER_TABLE)
-    
-        st.write("Vector Search index:")
-        st.code(VECTOR_SEARCH_INDEX_NAME)
 
 
 if "messages" not in st.session_state:
