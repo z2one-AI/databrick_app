@@ -7,7 +7,7 @@ import streamlit as st
 from databricks.sdk import WorkspaceClient
 from databricks.vector_search.client import VectorSearchClient
 from databricks import sql
-
+from databricks.sdk.core import Config
 
 # ----------------------------
 # Config
@@ -25,7 +25,12 @@ SILVER_TABLE = f"{CATALOG}.{SCHEMA}.silver_findex_indicators"
 DATABRICKS_HOST = os.getenv("DATABRICKS_HOST")
 DATABRICKS_WAREHOUSE_ID = os.getenv("DATABRICKS_WAREHOUSE_ID")
 
+import os
+import streamlit as st
 
+st.write("DATABRICKS_HOST exists:", bool(os.getenv("DATABRICKS_HOST")))
+st.write("DATABRICKS_CLIENT_ID exists:", bool(os.getenv("DATABRICKS_CLIENT_ID")))
+st.write("DATABRICKS_CLIENT_SECRET exists:", bool(os.getenv("DATABRICKS_CLIENT_SECRET")))
 # ----------------------------
 # Clients
 # ----------------------------
@@ -37,7 +42,14 @@ def get_workspace_client():
 
 @st.cache_resource
 def get_vector_index():
-    vsc = VectorSearchClient()
+    cfg = Config()
+
+    vsc = VectorSearchClient(
+        workspace_url=cfg.host,
+        service_principal_client_id=cfg.client_id,
+        service_principal_client_secret=cfg.client_secret
+    )
+
     return vsc.get_index(
         endpoint_name=VECTOR_SEARCH_ENDPOINT_NAME,
         index_name=VECTOR_SEARCH_INDEX_NAME
