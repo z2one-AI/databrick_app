@@ -6,7 +6,7 @@ env:
   - name: 'VECTOR_SEARCH_ENDPOINT_NAME'
     value: 'worldbank_findex_vs_endpoint'
   - name: 'VECTOR_SEARCH_INDEX_NAME'
-    value: 'worldbank_demo.findex.findex_report_chunks_index'
+    value: 'worldbank_demo.findex.new_index'
   - name: 'LLM_ENDPOINT_NAME'
     value: 'databricks-meta-llama-3-3-70b-instruct'
   - name: 'CATALOG'
