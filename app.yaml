@@ -1,0 +1,17 @@
+command: ['streamlit', 'run', 'app.py']
+
+env:
+  - name: 'STREAMLIT_GATHER_USAGE_STATS'
+    value: 'false'
+  - name: 'VECTOR_SEARCH_ENDPOINT_NAME'
+    value: 'worldbank_findex_vs_endpoint'
+  - name: 'VECTOR_SEARCH_INDEX_NAME'
+    value: 'worldbank_demo.findex.findex_report_chunks_index'
+  - name: 'LLM_ENDPOINT_NAME'
+    value: 'databricks-meta-llama-3-3-70b-instruct'
+  - name: 'CATALOG'
+    value: 'worldbank_demo'
+  - name: 'SCHEMA'
+    value: 'findex'
+  - name: 'DATABRICKS_WAREHOUSE_ID'
+    value: 'f6641433c1ffef81'
