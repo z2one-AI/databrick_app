@@ -82,7 +82,22 @@ def call_llm(prompt: str) -> str:
         temperature=0.1
     )
 
-    # Databricks SDK response shape can vary slightly by endpoint type.
+    try:
+        response_dict = response.as_dict()
+    except Exception:
+        response_dict = response
+
+    if isinstance(response_dict, dict):
+        choices = response_dict.get("choices", [])
+        if choices:
+            message = choices[0].get("message", {})
+            if isinstance(message, dict):
+                return message.get("content", str(response_dict))
+
+        predictions = response_dict.get("predictions", [])
+        if predictions:
+            return str(predictions[0])
+
     try:
         return response.choices[0].message.content
     except Exception:
@@ -94,13 +109,16 @@ def call_llm(prompt: str) -> str:
 # ----------------------------
 
 def run_sql(query: str) -> pd.DataFrame:
+    if not DATABRICKS_HOST:
+        raise ValueError("DATABRICKS_HOST environment variable is not set.")
+
     if not DATABRICKS_WAREHOUSE_ID:
         raise ValueError("DATABRICKS_WAREHOUSE_ID environment variable is not set.")
 
     with sql.connect(
         server_hostname=DATABRICKS_HOST.replace("https://", ""),
         http_path=f"/sql/1.0/warehouses/{DATABRICKS_WAREHOUSE_ID}",
-        credentials_provider=lambda: w.config.authenticate
+        credentials_provider=lambda: w.config.authenticate()
     ) as connection:
         with connection.cursor() as cursor:
             cursor.execute(query)
