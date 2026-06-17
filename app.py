@@ -31,7 +31,10 @@ SILVER_TABLE = f"{CATALOG}.{SCHEMA}.silver_findex_indicators"
 
 DATABRICKS_HOST = os.getenv("DATABRICKS_HOST")
 DATABRICKS_WAREHOUSE_ID = os.getenv("DATABRICKS_WAREHOUSE_ID")
-
+DATABRICKS_SERVER_HOSTNAME = (
+    os.getenv("DATABRICKS_SERVER_HOSTNAME")
+    or os.getenv("DATABRICKS_HOST", "").replace("https://", "").replace("http://", "")
+)
 # ----------------------------
 # Clients
 # ----------------------------
@@ -107,17 +110,24 @@ def call_llm(prompt: str) -> str:
 # SQL helper
 # ----------------------------
 
+from databricks.sdk.core import Config
+from databricks import sql
+import pandas as pd
+import os
+
 def run_sql(query: str) -> pd.DataFrame:
-    if not DATABRICKS_HOST:
-        raise ValueError("DATABRICKS_HOST environment variable is not set.")
+    if not DATABRICKS_SERVER_HOSTNAME:
+        raise ValueError("DATABRICKS_SERVER_HOSTNAME / DATABRICKS_HOST is not set.")
 
     if not DATABRICKS_WAREHOUSE_ID:
         raise ValueError("DATABRICKS_WAREHOUSE_ID environment variable is not set.")
 
+    cfg = Config()
+
     with sql.connect(
-        server_hostname=DATABRICKS_HOST.replace("https://", ""),
+        server_hostname=DATABRICKS_SERVER_HOSTNAME,
         http_path=f"/sql/1.0/warehouses/{DATABRICKS_WAREHOUSE_ID}",
-        credentials_provider=lambda: w.config.authenticate()
+        credentials_provider=lambda: cfg.authenticate
     ) as connection:
         with connection.cursor() as cursor:
             cursor.execute(query)
