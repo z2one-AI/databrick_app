@@ -595,6 +595,34 @@ st.title("🌍 World Bank Global Findex AI Assistant")
 st.caption("Structured indicators + Global Findex report RAG on Databricks")
 
 with st.sidebar:
+    st.divider()
+    st.subheader("Diagnostics")
+    
+    if st.button("Test LLM endpoint"):
+        try:
+            test_answer = call_llm("Reply with only: LLM OK")
+            st.success(test_answer)
+        except Exception as e:
+            st.error(f"LLM failed: {type(e).__name__}: {e}")
+            st.exception(e)
+    
+    if st.button("Test SQL Warehouse"):
+        try:
+            test_df = run_sql("SELECT 1 AS ok")
+            st.success("SQL OK")
+            st.dataframe(test_df)
+        except Exception as e:
+            st.error(f"SQL failed: {type(e).__name__}: {e}")
+            st.exception(e)
+    
+    if st.button("Test Vector Search"):
+        try:
+            test_results = search_report("mobile money", k=1)
+            st.success("Vector Search OK")
+            st.json(test_results)
+        except Exception as e:
+            st.error(f"Vector Search failed: {type(e).__name__}: {e}")
+            st.exception(e)
     st.subheader("Example questions")
     examples = [
         "Which countries lead in mobile money account ownership in 2024?",
@@ -671,8 +699,17 @@ if question:
                 })
 
             except Exception as e:
-                error_msg = f"Error: {e}"
+                import traceback
+            
+                error_msg = f"Error: {type(e).__name__}: {e}"
+                stack_trace = traceback.format_exc()
+            
                 st.error(error_msg)
+                st.exception(e)
+            
+                with st.expander("Full traceback"):
+                    st.code(stack_trace)
+            
                 st.session_state.messages.append({
                     "role": "assistant",
                     "content": error_msg
