@@ -8,7 +8,7 @@ from databricks.sdk import WorkspaceClient
 from databricks.vector_search.client import VectorSearchClient
 from databricks import sql
 from databricks.sdk.core import Config
-
+from databricks.sdk.service.serving import ChatMessage, ChatMessageRole
 
 st.set_page_config(
     page_title="World Bank Findex AI Assistant",
@@ -69,39 +69,38 @@ def call_llm(prompt: str) -> str:
     response = w.serving_endpoints.query(
         name=LLM_ENDPOINT_NAME,
         messages=[
-            {
-                "role": "system",
-                "content": "You are a helpful AI assistant for the World Bank Global Findex 2025 demo."
-            },
-            {
-                "role": "user",
-                "content": prompt
-            }
+            ChatMessage(
+                role=ChatMessageRole.SYSTEM,
+                content="You are a helpful AI assistant for the World Bank Global Findex 2025 demo."
+            ),
+            ChatMessage(
+                role=ChatMessageRole.USER,
+                content=prompt
+            )
         ],
         max_tokens=1200,
         temperature=0.1
     )
 
-    try:
-        response_dict = response.as_dict()
-    except Exception:
-        response_dict = response
-
-    if isinstance(response_dict, dict):
-        choices = response_dict.get("choices", [])
-        if choices:
-            message = choices[0].get("message", {})
-            if isinstance(message, dict):
-                return message.get("content", str(response_dict))
-
-        predictions = response_dict.get("predictions", [])
-        if predictions:
-            return str(predictions[0])
-
+    # Databricks SDK object response
     try:
         return response.choices[0].message.content
     except Exception:
-        return str(response)
+        pass
+
+    # Dict response fallback
+    if isinstance(response, dict):
+        choices = response.get("choices", [])
+        if choices:
+            message = choices[0].get("message", {})
+            if isinstance(message, dict):
+                return message.get("content", str(response))
+
+        predictions = response.get("predictions", [])
+        if predictions:
+            return str(predictions[0])
+
+    return str(response)
 
 
 # ----------------------------
