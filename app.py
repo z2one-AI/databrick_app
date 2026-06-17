@@ -4,6 +4,7 @@ import re
 import pandas as pd
 import streamlit as st
 
+
 from databricks.sdk import WorkspaceClient
 from databricks.vector_search.client import VectorSearchClient
 from databricks import sql
